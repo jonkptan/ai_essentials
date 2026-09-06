@@ -379,11 +379,38 @@ Create a weekly report for Management Reporting based on the transcripts that th
           <details>
             <summary>Clear Writing Instructions</summary>
             <div class="detail-body">
-              <div class="style-grid">
-                <div class="style-panel"><h3>Use</h3><ul><li>Use clear, simple language.</li><li>Use short, impactful sentences.</li><li>Use active voice.</li><li>Focus on practical, actionable insights.</li><li>Use bullet lists in social media posts.</li><li>Support claims with data and specific examples when possible.</li><li>Address the reader as “you” and “your.”</li><li>Vary sentence length and structure naturally.</li><li>Prefer specific nouns, numbers, examples, and actions.</li><li>Write like a person with a point of view.</li></ul></div>
-                <div class="style-panel avoid"><h3>Avoid</h3><ul><li>Em dashes and semicolons.</li><li>Passive voice, metaphors, clichés, hashtags, and broad generalisations.</li><li>Repeated contrast formulas and forced groups of three.</li><li>Generic setup or closing language.</li><li>Warnings, notes, filler, and unnecessary context.</li><li>Restating the request or repeating the same idea.</li><li>Excessive headings, transitions, qualifiers, and parenthetical explanations.</li><li>Rhetorical questions and fake conversational transitions.</li><li>Corporate language when ordinary language works.</li><li>Generic claims without a concrete example, reason, number, person, event, or action.</li><li>Social icons, hashtags, asterisks, and markdown in the requested output.</li></ul></div>
+              <p>Select the instructions, then select “Copy Selected Instructions” to copy them to your clipboard.</p>
+              <div class="count">Selected: <span id="writingSelectedCount">0</span> of <span id="writingTotalCount">0</span></div>
+              <div class="choice-list" id="writingInstructionList">
+                <h3>Use</h3>
+                <label class="choice"><input type="checkbox" value="Use clear, simple language."><span>Use clear, simple language.</span></label>
+                <label class="choice"><input type="checkbox" value="Use short, impactful sentences."><span>Use short, impactful sentences.</span></label>
+                <label class="choice"><input type="checkbox" value="Use active voice."><span>Use active voice.</span></label>
+                <label class="choice"><input type="checkbox" value="Focus on practical, actionable insights."><span>Focus on practical, actionable insights.</span></label>
+                <label class="choice"><input type="checkbox" value="Use bullet lists in social media posts."><span>Use bullet lists in social media posts.</span></label>
+                <label class="choice"><input type="checkbox" value="Support claims with data and specific examples when possible."><span>Support claims with data and specific examples when possible.</span></label>
+                <label class="choice"><input type="checkbox" value="Address the reader as ‘you’ and ‘your.’"><span>Address the reader as “you” and “your.”</span></label>
+                <label class="choice"><input type="checkbox" value="Vary sentence length and structure naturally."><span>Vary sentence length and structure naturally.</span></label>
+                <label class="choice"><input type="checkbox" value="Prefer specific nouns, numbers, examples, and actions."><span>Prefer specific nouns, numbers, examples, and actions.</span></label>
+                <label class="choice"><input type="checkbox" value="Write like a person with a point of view."><span>Write like a person with a point of view.</span></label>
+                <h3>Avoid</h3>
+                <label class="choice"><input type="checkbox" value="Avoid em dashes and semicolons."><span>Avoid em dashes and semicolons.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid passive voice, metaphors, clichés, hashtags, and broad generalisations."><span>Avoid passive voice, metaphors, clichés, hashtags, and broad generalisations.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid repeated contrast formulas and forced groups of three."><span>Avoid repeated contrast formulas and forced groups of three.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid generic setup or closing language."><span>Avoid generic setup or closing language.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid warnings, notes, filler, and unnecessary context."><span>Avoid warnings, notes, filler, and unnecessary context.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid restating the request or repeating the same idea."><span>Avoid restating the request or repeating the same idea.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid excessive headings, transitions, qualifiers, and parenthetical explanations."><span>Avoid excessive headings, transitions, qualifiers, and parenthetical explanations.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid rhetorical questions and fake conversational transitions."><span>Avoid rhetorical questions and fake conversational transitions.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid corporate language when ordinary language works."><span>Avoid corporate language when ordinary language works.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid generic claims without a concrete example, reason, number, person, event, or action."><span>Avoid generic claims without a concrete example, reason, number, person, event, or action.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid social icons, hashtags, asterisks, and markdown in the requested output."><span>Avoid social icons, hashtags, asterisks, and markdown in the requested output.</span></label>
               </div>
-              <div class="style-panel avoid" style="margin-top:18px"><h3>Avoid these words and phrases</h3><p class="word-list">can, may, just, that, very, really, literally, actually, certainly, probably, basically, could, maybe, delve, embark, enlightening, esteemed, shed light, craft, crafting, imagine, realm, game-changer, unlock, discover, skyrocket, abyss, not alone, in a world where, revolutionize, disruptive, utilize, utilizing, dive deep, tapestry, illuminate, unveil, pivotal, intricate, elucidate, hence, furthermore, however, harness, exciting, groundbreaking, cutting-edge, remarkable, it, remains to be seen, glimpse into, navigating, landscape, stark, testament, in summary, in conclusion, moreover, boost, skyrocketing, opened up, powerful, inquiries, ever-evolving.</p></div>
+              <h3>Avoid these words and phrases</h3>
+              <div class="choice-list" id="avoidWordsChecklist"></div>
+              <div class="actions"><button class="action" type="button" id="writingSelectAll">Select All</button><button class="action" type="button" id="writingClearAll">Clear All</button><button class="action" type="button" id="writingCopySelected">Copy Selected Instructions</button></div>
+              <h3>Preview</h3>
+              <div class="preview-box" id="writingInstructionPreview">Your selected instructions will appear here...</div>
             </div>
           </details>
         </div>
@@ -487,6 +514,50 @@ Analyse this conversation and write one complete prompt that would reproduce thi
   document.getElementById('clearAll').addEventListener('click', function () { instructionBoxes.forEach(function (box) { box.checked = false; }); updateInstructions(); });
   document.getElementById('copySelected').addEventListener('click', function () {
     var text = instructionBoxes.filter(function (box) { return box.checked; }).map(function (box) { return box.value; }).join('\n');
+    if (!text) return;
+    var button = this;
+    copyText(text, function () { var original = button.textContent; button.textContent = 'Copied'; setTimeout(function () { button.textContent = original; }, 1600); });
+  });
+
+  var avoidWordsAndPhrases = [
+    'can', 'may', 'just', 'that', 'very', 'really', 'literally', 'actually', 'certainly', 'probably',
+    'basically', 'could', 'maybe', 'delve', 'embark', 'enlightening', 'esteemed', 'shed light', 'craft',
+    'crafting', 'imagine', 'realm', 'game-changer', 'unlock', 'discover', 'skyrocket', 'abyss', 'not alone',
+    'in a world where', 'revolutionize', 'disruptive', 'utilize', 'utilizing', 'dive deep', 'tapestry',
+    'illuminate', 'unveil', 'pivotal', 'intricate', 'elucidate', 'hence', 'furthermore', 'however', 'harness',
+    'exciting', 'groundbreaking', 'cutting-edge', 'remarkable', 'it', 'remains to be seen', 'glimpse into',
+    'navigating', 'landscape', 'stark', 'testament', 'in summary', 'in conclusion', 'moreover', 'boost',
+    'skyrocketing', 'opened up', 'powerful', 'inquiries', 'ever-evolving'
+  ];
+  var avoidWordsChecklist = document.getElementById('avoidWordsChecklist');
+  avoidWordsAndPhrases.forEach(function (word) {
+    var label = document.createElement('label');
+    label.className = 'choice';
+    var box = document.createElement('input');
+    box.type = 'checkbox';
+    box.value = 'Avoid the word or phrase: ' + word + '.';
+    var text = document.createElement('span');
+    text.textContent = word;
+    label.appendChild(box);
+    label.appendChild(text);
+    avoidWordsChecklist.appendChild(label);
+  });
+
+  var writingInstructionBoxes = Array.from(document.querySelectorAll('#writingInstructionList input, #avoidWordsChecklist input'));
+  var writingInstructionPreview = document.getElementById('writingInstructionPreview');
+  var writingSelectedCount = document.getElementById('writingSelectedCount');
+  var writingTotalCount = document.getElementById('writingTotalCount');
+  writingTotalCount.textContent = writingInstructionBoxes.length;
+  function updateWritingInstructions() {
+    var selected = writingInstructionBoxes.filter(function (box) { return box.checked; }).map(function (box) { return box.value; });
+    writingSelectedCount.textContent = selected.length;
+    writingInstructionPreview.textContent = selected.length ? selected.join('\n') : 'Your selected instructions will appear here...';
+  }
+  writingInstructionBoxes.forEach(function (box) { box.addEventListener('change', updateWritingInstructions); });
+  document.getElementById('writingSelectAll').addEventListener('click', function () { writingInstructionBoxes.forEach(function (box) { box.checked = true; }); updateWritingInstructions(); });
+  document.getElementById('writingClearAll').addEventListener('click', function () { writingInstructionBoxes.forEach(function (box) { box.checked = false; }); updateWritingInstructions(); });
+  document.getElementById('writingCopySelected').addEventListener('click', function () {
+    var text = writingInstructionBoxes.filter(function (box) { return box.checked; }).map(function (box) { return box.value; }).join('\n');
     if (!text) return;
     var button = this;
     copyText(text, function () { var original = button.textContent; button.textContent = 'Copied'; setTimeout(function () { button.textContent = original; }, 1600); });
