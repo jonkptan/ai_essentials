@@ -110,6 +110,15 @@
   .choice { display: flex; gap: 11px; align-items: flex-start; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: #fbfdff; cursor: pointer; }
   .choice:hover { border-color: #8ec5ff; background: #f1f7ff; }
   .choice input { margin-top: 3px; accent-color: var(--blue); }
+  .writing-rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+  .writing-rule-panel { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #f7faff; }
+  .writing-rule-panel.avoid-panel { background: #fff8f8; border-color: #f0d8dc; }
+  .writing-rule-panel h3, .avoid-words-panel h3 { margin: 0 0 14px; }
+  .writing-rule-panel .choice-list { margin: 0; }
+  .avoid-words-panel { margin-top: 18px; padding: 18px; border: 1px solid #f0d8dc; border-radius: 12px; background: #fff8f8; }
+  .compact-word-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0; }
+  .word-choice { min-height: 42px; padding: 9px 10px; background: white; font-size: 13px; align-items: center; }
+  .word-choice input { margin-top: 0; }
   .count { margin-top: 14px; font-weight: 750; color: var(--navy); }
   .preview-box { min-height: 56px; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: white; white-space: pre-wrap; font: 13px/1.55 Consolas, monospace; }
   .terms-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
@@ -136,6 +145,7 @@
     .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .tool-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .style-grid { grid-template-columns: 1fr; }
+    .writing-rule-grid { grid-template-columns: 1fr; }
     .terms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hero { min-height: 430px; }
   }
@@ -144,6 +154,7 @@
     .section { padding: 56px 0; }
     .cards, .tool-cards { grid-template-columns: 1fr; }
     .terms-grid { grid-template-columns: 1fr; }
+    .compact-word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hero h1 { font-size: 48px; letter-spacing: -2px; }
     summary { padding: 17px; }
     .detail-body { padding: 18px; }
@@ -381,8 +392,10 @@ Create a weekly report for Management Reporting based on the transcripts that th
             <div class="detail-body">
               <p>Select the instructions, then select “Copy Selected Instructions” to copy them to your clipboard.</p>
               <div class="count">Selected: <span id="writingSelectedCount">0</span> of <span id="writingTotalCount">0</span></div>
-              <div class="choice-list" id="writingInstructionList">
+              <div class="writing-rule-grid">
+                <div class="writing-rule-panel">
                 <h3>Use</h3>
+                <div class="choice-list" id="writingUseList">
                 <label class="choice"><input type="checkbox" value="Use clear, simple language."><span>Use clear, simple language.</span></label>
                 <label class="choice"><input type="checkbox" value="Use short, impactful sentences."><span>Use short, impactful sentences.</span></label>
                 <label class="choice"><input type="checkbox" value="Use active voice."><span>Use active voice.</span></label>
@@ -393,7 +406,11 @@ Create a weekly report for Management Reporting based on the transcripts that th
                 <label class="choice"><input type="checkbox" value="Vary sentence length and structure naturally."><span>Vary sentence length and structure naturally.</span></label>
                 <label class="choice"><input type="checkbox" value="Prefer specific nouns, numbers, examples, and actions."><span>Prefer specific nouns, numbers, examples, and actions.</span></label>
                 <label class="choice"><input type="checkbox" value="Write like a person with a point of view."><span>Write like a person with a point of view.</span></label>
+                </div>
+                </div>
+                <div class="writing-rule-panel avoid-panel">
                 <h3>Avoid</h3>
+                <div class="choice-list" id="writingAvoidList">
                 <label class="choice"><input type="checkbox" value="Avoid em dashes and semicolons."><span>Avoid em dashes and semicolons.</span></label>
                 <label class="choice"><input type="checkbox" value="Avoid passive voice, metaphors, clichés, hashtags, and broad generalisations."><span>Avoid passive voice, metaphors, clichés, hashtags, and broad generalisations.</span></label>
                 <label class="choice"><input type="checkbox" value="Avoid repeated contrast formulas and forced groups of three."><span>Avoid repeated contrast formulas and forced groups of three.</span></label>
@@ -405,9 +422,13 @@ Create a weekly report for Management Reporting based on the transcripts that th
                 <label class="choice"><input type="checkbox" value="Avoid corporate language when ordinary language works."><span>Avoid corporate language when ordinary language works.</span></label>
                 <label class="choice"><input type="checkbox" value="Avoid generic claims without a concrete example, reason, number, person, event, or action."><span>Avoid generic claims without a concrete example, reason, number, person, event, or action.</span></label>
                 <label class="choice"><input type="checkbox" value="Avoid social icons, hashtags, asterisks, and markdown in the requested output."><span>Avoid social icons, hashtags, asterisks, and markdown in the requested output.</span></label>
+                </div>
+                </div>
               </div>
-              <h3>Avoid these words and phrases</h3>
-              <div class="choice-list" id="avoidWordsChecklist"></div>
+              <div class="avoid-words-panel">
+                <h3>Avoid these words and phrases</h3>
+                <div class="compact-word-grid" id="avoidWordsChecklist"></div>
+              </div>
               <div class="actions"><button class="action" type="button" id="writingSelectAll">Select All</button><button class="action" type="button" id="writingClearAll">Clear All</button><button class="action" type="button" id="writingCopySelected">Copy Selected Instructions</button></div>
               <h3>Preview</h3>
               <div class="preview-box" id="writingInstructionPreview">Your selected instructions will appear here...</div>
@@ -532,7 +553,7 @@ Analyse this conversation and write one complete prompt that would reproduce thi
   var avoidWordsChecklist = document.getElementById('avoidWordsChecklist');
   avoidWordsAndPhrases.forEach(function (word) {
     var label = document.createElement('label');
-    label.className = 'choice';
+    label.className = 'choice word-choice';
     var box = document.createElement('input');
     box.type = 'checkbox';
     box.value = 'Avoid the word or phrase: ' + word + '.';
@@ -543,7 +564,7 @@ Analyse this conversation and write one complete prompt that would reproduce thi
     avoidWordsChecklist.appendChild(label);
   });
 
-  var writingInstructionBoxes = Array.from(document.querySelectorAll('#writingInstructionList input, #avoidWordsChecklist input'));
+  var writingInstructionBoxes = Array.from(document.querySelectorAll('#writingUseList input, #writingAvoidList input, #avoidWordsChecklist input'));
   var writingInstructionPreview = document.getElementById('writingInstructionPreview');
   var writingSelectedCount = document.getElementById('writingSelectedCount');
   var writingTotalCount = document.getElementById('writingTotalCount');
