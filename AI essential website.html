@@ -1,0 +1,496 @@
+<style>
+  :root {
+    --navy: #061b45;
+    --navy-2: #0a2b63;
+    --blue: #0878f9;
+    --cyan: #48b8ff;
+    --ink: #071630;
+    --muted: #526786;
+    --line: #d9e3f2;
+    --surface: #f4f7fd;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--surface); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+  a { color: inherit; }
+  .portal { width: 100%; overflow: hidden; }
+  .wrap { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+
+  .hero {
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    color: white;
+    background:
+      linear-gradient(90deg, rgba(4, 24, 61, .92), rgba(10, 57, 128, .64)),
+      url("https://drive.google.com/thumbnail?id=1ap-sZJz_YPo4UrxnIAGRGAPqRdhZDMZu&sz=w2000") center/cover no-repeat;
+  }
+  .eyebrow { margin: 0 0 18px; color: #85d5ff; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+  .hero h1 { max-width: 780px; margin: 0; font-size: clamp(52px, 8vw, 96px); line-height: .94; letter-spacing: -4px; }
+  .hero h1 span { display: block; color: var(--cyan); }
+  .hero p:last-child { max-width: 680px; margin: 28px 0 0; color: #d7e8ff; font-size: clamp(17px, 2vw, 21px); line-height: 1.55; }
+
+  .section { padding: 76px 0; scroll-margin-top: 16px; }
+  .section.white { background: white; }
+  .section.dark { background: linear-gradient(135deg, var(--navy), var(--navy-2)); color: white; }
+  .section-label { margin: 0 0 12px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+  .dark .section-label { color: #7fd4ff; }
+  .section h2 { margin: 0 0 14px; font-size: clamp(31px, 4vw, 46px); line-height: 1.08; letter-spacing: -1.4px; }
+  .intro { max-width: 780px; margin: 0 0 34px; color: var(--muted); font-size: 17px; line-height: 1.65; }
+  .dark .intro { color: #c8d8ef; }
+  .group-title { margin: 36px 0 16px; font-size: 14px; letter-spacing: 1.4px; text-transform: uppercase; }
+
+  .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .resource-card {
+    min-height: 92px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 17px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: white;
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(21, 53, 102, .07);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .resource-card:hover { transform: translateY(-4px); border-color: #8ec5ff; box-shadow: 0 16px 32px rgba(10, 75, 168, .16); }
+  .resource-card:focus-visible { outline: 3px solid rgba(8, 120, 249, .35); outline-offset: 2px; }
+  .card-icon { width: 45px; height: 45px; flex: 0 0 45px; display: grid; place-items: center; border-radius: 13px; background: #e9f2ff; color: #075dd5; font-size: 12px; font-weight: 800; }
+  .card-copy { min-width: 0; }
+  .card-copy strong { display: block; margin-bottom: 4px; font-size: 15px; }
+  .card-copy small { display: block; color: var(--muted); font-size: 11px; line-height: 1.35; }
+  .arrow { margin-left: auto; color: #7e94b4; font-size: 18px; }
+
+  .tool-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .tool-card { min-height: 70px; justify-content: flex-start; }
+
+  .accordion { display: grid; gap: 12px; }
+  details { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: white; box-shadow: 0 5px 16px rgba(21, 53, 102, .05); }
+  summary { display: flex; align-items: center; gap: 16px; padding: 20px 22px; color: var(--navy); cursor: pointer; font-weight: 750; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--blue); font-size: 25px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details[open] summary { border-bottom: 1px solid var(--line); background: #f8fbff; }
+  .detail-body { padding: 22px; color: #2a4060; line-height: 1.65; }
+  .detail-body p:first-child { margin-top: 0; }
+  .detail-body p:last-child { margin-bottom: 0; }
+  .detail-body ul { margin: 12px 0 0; padding-left: 22px; }
+  .detail-body li { margin: 7px 0; }
+  .example { margin-top: 16px; padding: 16px 18px; border-left: 4px solid var(--blue); border-radius: 0 10px 10px 0; background: #edf5ff; white-space: pre-line; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 11px; margin: 18px 0; }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 11px 18px;
+    border: 1px solid #a9c8ee;
+    border-radius: 10px;
+    background: white;
+    color: #064faa;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .action:hover { transform: translateY(-2px); background: var(--blue); color: white; box-shadow: 0 9px 20px rgba(8, 120, 249, .22); }
+
+  .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .style-panel { padding: 20px; border-radius: 12px; background: #f7faff; border: 1px solid var(--line); }
+  .style-panel h3 { margin: 0 0 12px; color: var(--navy); font-size: 18px; }
+  .avoid { background: #fff8f8; border-color: #f0d8dc; }
+  .word-list { color: #5c3040; }
+  .choice-list { display: grid; gap: 9px; margin: 16px 0; }
+  .choice { display: flex; gap: 11px; align-items: flex-start; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: #fbfdff; cursor: pointer; }
+  .choice:hover { border-color: #8ec5ff; background: #f1f7ff; }
+  .choice input { margin-top: 3px; accent-color: var(--blue); }
+  .count { margin-top: 14px; font-weight: 750; color: var(--navy); }
+  .preview-box { min-height: 56px; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: white; white-space: pre-wrap; font: 13px/1.55 Consolas, monospace; }
+  .terms-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+  .term-group { padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+  .term-group h3 { margin: 0 0 12px; padding-bottom: 9px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .term { margin: 4px 2px; padding: 7px 9px; border: 1px solid #c8d4e4; border-radius: 6px; background: white; color: var(--ink); cursor: pointer; }
+  .term:hover, .term.selected { border-color: var(--blue); background: #e8f3ff; color: #064faa; }
+  .idea { padding: 20px 0; border-top: 1px solid var(--line); }
+  .idea:first-child { border-top: 0; padding-top: 0; }
+  .idea h3 { margin: 0 0 10px; color: var(--navy); font-size: 17px; }
+  .idea p { margin: 7px 0; }
+
+  .case-study { text-align: center; }
+  .case-copy { max-width: 920px; margin: 32px auto 0; padding-top: 30px; border-top: 1px solid rgba(255,255,255,.18); text-align: left; }
+  .case-copy p, .case-copy li { color: #d6e2f5; line-height: 1.7; }
+  .case-copy h3 { color: white; }
+  .dark .action { border-color: rgba(255,255,255,.3); background: white; color: var(--navy); }
+  .dark .action:hover { border-color: var(--cyan); background: var(--cyan); color: var(--navy); }
+
+  .advanced details { box-shadow: none; }
+  footer { padding: 34px 20px; background: #03122e; color: #cbd9ef; text-align: center; font-size: 14px; }
+
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tool-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .style-grid { grid-template-columns: 1fr; }
+    .terms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero { min-height: 430px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { width: min(100% - 24px, 1160px); }
+    .section { padding: 56px 0; }
+    .cards, .tool-cards { grid-template-columns: 1fr; }
+    .terms-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 48px; letter-spacing: -2px; }
+    summary { padding: 17px; }
+    .detail-body { padding: 18px; }
+  }
+</style>
+
+<div class="portal" id="top">
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Professional Learning Portal</p>
+      <h1>Certificate in <span>AI Essentials</span></h1>
+      <p>Build customised Gen-AI applications to supercharge your work.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="resources">
+      <div class="wrap">
+        <p class="section-label">Course hub</p>
+        <h2>Everything you need, in one place.</h2>
+        <p class="intro">Access course presentations, supporting files, and classroom tools from the links below.</p>
+
+        <h3 class="group-title">Administrative Links</h3>
+        <div class="cards">
+          <a class="resource-card" href="https://drive.google.com/drive/folders/1ZRzgrTo6brVsdvV_a7lE1YbBNf6nBAZN?usp=sharing" target="_blank" rel="noopener"><span class="card-icon">PF</span><span class="card-copy"><strong>Practice Files</strong><small>Open the shared folder</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://drive.google.com/file/d/1rBgFqyneE7uK3s_ixUIuxTQ5o3Ni_O9Y/view?usp=sharing" target="_blank" rel="noopener"><span class="card-icon">D1</span><span class="card-copy"><strong>Day 1 Slides</strong><small>Open the presentation</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://drive.google.com/file/d/1jOQZkWR2q9DsGolmpV7L8aw_QEl3KDDS/view?usp=sharing" target="_blank" rel="noopener"><span class="card-icon">D2</span><span class="card-copy"><strong>Day 2 Slides</strong><small>Open the presentation</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://drive.google.com/file/d/1GU5Oq8OfTx7EMRGbxA69WgzHA0FHYndq/view?usp=sharing" target="_blank" rel="noopener"><span class="card-icon">D3</span><span class="card-copy"><strong>Day 3 Slides</strong><small>Open the presentation</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://drive.google.com/file/d/1FSn6hqLhp9snnaj2wTyHnNYSp9-vVYGm/view" target="_blank" rel="noopener"><span class="card-icon">F1</span><span class="card-copy"><strong>Download File 1</strong><small>Open the download file</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://drive.google.com/file/d/1xQyhn5J38ooAcpwIDoYAnrlF04iEn7UW/view?usp=sharing" target="_blank" rel="noopener"><span class="card-icon">F2</span><span class="card-copy"><strong>Download File 2</strong><small>Open the download file</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://ssgtraqom.qualtrics.com/jfe/form/SV_3K9i7rTJ9OLsauW?Q_CHL=qr" target="_blank" rel="noopener"><span class="card-icon">TQ</span><span class="card-copy"><strong>TRAQOM</strong><small>Open the feedback form</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://docs.google.com/forms/d/e/1FAIpQLSd9hkRMGCIAJBWeG2dGtj0PpmoiFhX-fmRTdaqSHCW3Y3MdUw/viewform" target="_blank" rel="noopener"><span class="card-icon">BE</span><span class="card-copy"><strong>BELLS</strong><small>Open the survey</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card" href="https://bells.hypeschools.com/auth?login=true&amp;student=true" target="_blank" rel="noopener"><span class="card-icon">LMS</span><span class="card-copy"><strong>LMS</strong><small>Open the learning system</small></span><span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white" id="tools">
+      <div class="wrap">
+        <p class="section-label">Learning tools</p>
+        <h2>Classroom Activities</h2>
+        <p class="intro">Open each platform in a new browser tab.</p>
+        <div class="tool-cards">
+          <a class="resource-card tool-card" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="card-icon">CG</span><span class="card-copy"><strong>ChatGPT</strong><small>Open ChatGPT</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://claude.ai/" target="_blank" rel="noopener"><span class="card-icon">CL</span><span class="card-copy"><strong>Claude</strong><small>Open Claude</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener"><span class="card-icon">CO</span><span class="card-copy"><strong>Copilot</strong><small>Open Microsoft Copilot</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://gemini.google.com" target="_blank" rel="noopener"><span class="card-icon">GE</span><span class="card-copy"><strong>Gemini</strong><small>Open Google Gemini</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://gamma.app/signup?r=060046gffc07f1e" target="_blank" rel="noopener"><span class="card-icon">GA</span><span class="card-copy"><strong>Gamma</strong><small>Open Gamma</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://otter.ai/referrals/8H90S7JR" target="_blank" rel="noopener"><span class="card-icon">OT</span><span class="card-copy"><strong>Otter</strong><small>Open Otter</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://lumen5.com/" target="_blank" rel="noopener"><span class="card-icon">L5</span><span class="card-copy"><strong>Lumen5</strong><small>Open Lumen5</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://notebooklm.google/" target="_blank" rel="noopener"><span class="card-icon">NM</span><span class="card-copy"><strong>Gemini Notebook</strong><small>Open NotebookLM</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://aistudio.google.com" target="_blank" rel="noopener"><span class="card-icon">AS</span><span class="card-copy"><strong>AI Studio</strong><small>Open Google AI Studio</small></span><span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="more-tools">
+      <div class="wrap">
+        <p class="section-label">Independent learning</p>
+        <h2>Additional GenAI Tools to Explore on Your Own</h2>
+        <p class="intro">Try these platforms as optional extensions to the classroom activities.</p>
+        <div class="tool-cards">
+          <a class="resource-card tool-card" href="https://chat.deepseek.com/en" target="_blank" rel="noopener"><span class="card-icon">DS</span><span class="card-copy"><strong>DeepSeek</strong><small>AI assistant</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://manus.im" target="_blank" rel="noopener"><span class="card-icon">MA</span><span class="card-copy"><strong>Manus</strong><small>AI agent</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://chat.qwen.ai/" target="_blank" rel="noopener"><span class="card-icon">QW</span><span class="card-copy"><strong>Qwen</strong><small>AI assistant</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://www.dola.com/" target="_blank" rel="noopener"><span class="card-icon">DO</span><span class="card-copy"><strong>Dola</strong><small>AI assistant</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://www.perplexity.ai/" target="_blank" rel="noopener"><span class="card-icon">PX</span><span class="card-copy"><strong>Perplexity</strong><small>AI search</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://grok.com" target="_blank" rel="noopener"><span class="card-icon">GR</span><span class="card-copy"><strong>Grok</strong><small>AI assistant</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://meta.ai" target="_blank" rel="noopener"><span class="card-icon">ME</span><span class="card-copy"><strong>Meta AI</strong><small>AI assistant</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://clipdrop.co" target="_blank" rel="noopener"><span class="card-icon">CD</span><span class="card-copy"><strong>ClipDrop</strong><small>Image editing</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://creator.nightcafe.studio/?ru=J5h0cna3HwYPDXK1KKlEVDfHZX92" target="_blank" rel="noopener"><span class="card-icon">NC</span><span class="card-copy"><strong>NightCafe</strong><small>Image generation</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://www.colossyan.com/" target="_blank" rel="noopener"><span class="card-icon">CO</span><span class="card-copy"><strong>Colossyan</strong><small>AI video</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://www.napkin.ai/" target="_blank" rel="noopener"><span class="card-icon">NA</span><span class="card-copy"><strong>Napkin</strong><small>Visual AI</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://suno.com/invite/@bubblyprodigy538" target="_blank" rel="noopener"><span class="card-icon">SU</span><span class="card-copy"><strong>Suno</strong><small>AI music</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://scribehow.com/signup?affiliate=db7812c1-91fb-4645-912a-09aa56deece4" target="_blank" rel="noopener"><span class="card-icon">SC</span><span class="card-copy"><strong>Scribe</strong><small>Process guides</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://studio.d-id.com" target="_blank" rel="noopener"><span class="card-icon">DI</span><span class="card-copy"><strong>D-ID Studio</strong><small>AI video</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://app.heygen.com/home" target="_blank" rel="noopener"><span class="card-icon">HG</span><span class="card-copy"><strong>HeyGen</strong><small>AI video</small></span><span class="arrow">↗</span></a>
+          <a class="resource-card tool-card" href="https://futuretools.io/glossary" target="_blank" rel="noopener"><span class="card-icon">AG</span><span class="card-copy"><strong>AI Glossary</strong><small>AI terminology</small></span><span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="activities">
+      <div class="wrap">
+        <p class="section-label">Prompt practice</p>
+        <h2>Prompts &amp; Activities</h2>
+        <p class="intro">Select an activity to view its instructions and resources.</p>
+        <div class="accordion">
+          <details>
+            <summary>Personalisation: Instructions for customising AI's output</summary>
+            <div class="detail-body">
+              <p>Select the instructions, then select “Copy Selected Instructions” to copy them to your clipboard.</p>
+              <div class="count">Selected: <span id="selectedCount">0</span> of 20</div>
+              <div class="choice-list" id="instructionList">
+                <label class="choice"><input type="checkbox" value="Ask questions to clarify if my instructions are ambiguous."><span>Ask questions to clarify if my instructions are ambiguous.</span></label>
+                <label class="choice"><input type="checkbox" value="Keep answers under 100 words."><span>Keep answers under 100 words.</span></label>
+                <label class="choice"><input type="checkbox" value="Use bullet points for lists."><span>Use bullet points for lists.</span></label>
+                <label class="choice"><input type="checkbox" value="Start with a brief summary."><span>Start with a brief summary.</span></label>
+                <label class="choice"><input type="checkbox" value="Explain concepts like I'm a beginner."><span>Explain concepts like I'm a beginner.</span></label>
+                <label class="choice"><input type="checkbox" value="Prefer UK English spelling."><span>Prefer UK English spelling.</span></label>
+                <label class="choice"><input type="checkbox" value="Think carefully before answering."><span>Think carefully before answering.</span></label>
+                <label class="choice"><input type="checkbox" value="Suggest follow-up questions."><span>Suggest follow-up questions.</span></label>
+                <label class="choice"><input type="checkbox" value="Always cite sources when possible."><span>Always cite sources when possible.</span></label>
+                <label class="choice"><input type="checkbox" value="Focus on practical applications."><span>Focus on practical applications.</span></label>
+                <label class="choice"><input type="checkbox" value="Use clear headings in longer responses."><span>Use clear headings in longer responses.</span></label>
+                <label class="choice"><input type="checkbox" value="Avoid technical jargon."><span>Avoid technical jargon.</span></label>
+                <label class="choice"><input type="checkbox" value="Be concise, not abrupt."><span>Be concise, not abrupt.</span></label>
+                <label class="choice"><input type="checkbox" value="Structure advice as step-by-step."><span>Structure advice as step-by-step.</span></label>
+                <label class="choice"><input type="checkbox" value="Ask for my knowledge level on a topic when it's relevant."><span>Ask for my knowledge level on a topic when it's relevant.</span></label>
+                <label class="choice"><input type="checkbox" value="Include relevant examples."><span>Include relevant examples.</span></label>
+                <label class="choice"><input type="checkbox" value="Present pros and cons for advice."><span>Present pros and cons for advice.</span></label>
+                <label class="choice"><input type="checkbox" value="Prioritise accuracy over speed."><span>Prioritise accuracy over speed.</span></label>
+                <label class="choice"><input type="checkbox" value="Use analogies for complex ideas."><span>Use analogies for complex ideas.</span></label>
+                <label class="choice"><input type="checkbox" value="End with a key takeaway."><span>End with a key takeaway.</span></label>
+              </div>
+              <div class="actions"><button class="action" type="button" id="selectAll">Select All</button><button class="action" type="button" id="clearAll">Clear All</button><button class="action" type="button" id="copySelected">Copy Selected Instructions</button></div>
+              <h3>Preview</h3><div class="preview-box" id="instructionPreview">Your selected instructions will appear here...</div>
+            </div>
+          </details>
+
+          <details>
+            <summary>ACPR Method: Generic prompting method for completing tasks</summary>
+            <div class="detail-body">
+              <p>Framework to instruct an AI chatbot to complete a specific task with relevant details for customised output.</p><h3>Prompt template</h3>
+              <ul><li>Act as <em>[insert chatbot's role]</em></li><li>Create <em>[specify the task]</em></li><li>Present in <em>[state the tone and style]</em></li><li>Refer to this: <em>[include context, information, or examples]</em></li></ul>
+              <div class="example" id="hokkaidoPrompt">Act as a tour guide from Japan.
+Create a 3-day itinerary to Hokkaido.
+Present in table format.
+Refer to this:
+- We will travel as a family of four, my wife and two teenage sons.
+- We like local food and cultural experiences.
+- We want to take scenic photos.</div>
+              <div class="actions"><button class="action copy-button" type="button" data-copy="hokkaidoPrompt">Copy ACPR Prompt for Hokkaido itinerary</button></div>
+              <div class="example" id="feedbackPrompt">Act as a compassionate manager with experience providing constructive email feedback to a team member who missed a project deadline.
+Create an email addressing the missed deadline.
+Present in a calm, direct tone, professional, warm, and supportive.
+Refer to this:
+- Assume positive intent. This is a coaching moment, not a reprimand.
+- Open with empathy, ask clarifying questions, then close with support and next steps.</div>
+              <div class="actions"><button class="action copy-button" type="button" data-copy="feedbackPrompt">Copy ACPR Prompt for constructive feedback</button></div>
+            </div>
+          </details>
+
+          <details>
+            <summary>Ask Me Method: Getting AI to prompt you before generation</summary>
+            <div class="detail-body"><p>Get an AI chatbot to ask interactive questions to clarify the task and gather relevant information. This helps the chatbot understand your needs and provide a customised response.</p><h3>Prompt template</h3><ul><li>Act as <em>[insert chatbot's role]</em></li><li>Create <em>[specify the task]</em></li><li>Ask me [x] multiple-choice questions, one question at a time, to provide the best and most tailored response.</li></ul><div class="example" id="askMePrompt">Act as an expert in report writing.
+Create a proposal for the adoption of AI in my company, BELLS Institute.
+Ask me five multiple-choice questions, one question at a time, to provide the best and most tailored response.</div><div class="actions"><button class="action copy-button" type="button" data-copy="askMePrompt">Copy Prompt for AI adoption proposal</button></div></div>
+          </details>
+
+          <details>
+            <summary>Project: Customised mini app within the AI chatbot</summary>
+            <div class="detail-body">
+              <p><strong>Recipe Generator Demo:</strong> A customised app that generates recipes from the ingredients a user provides.</p>
+              <div class="actions">
+                <a class="action" href="https://drive.google.com/file/d/1QLJdMkQ_JW1b5RuPHbEoQH0YqcbgFxPr/view?usp=sharing" target="_blank" rel="noopener">Download Recipe Book 1</a>
+                <a class="action" href="https://drive.google.com/file/d/1AIIQmz2Hmdv-6VRfVfYkJvN0u9t9BXGx/view?usp=sharing" target="_blank" rel="noopener">Download Recipe Book 2</a>
+              </div>
+              <h3>Project Instructions</h3>
+              <div class="example" id="recipePrompt">Act as an international chef.
+Create a dinner recipe when the user provides ingredients.
+Present a one-sentence overview, ingredients, and step-by-step cooking instructions.
+The meal must take no more than one hour to prepare.
+Use healthy cooking options.
+Exclude peanuts.</div>
+              <div class="actions"><button class="action copy-button" type="button" data-copy="recipePrompt">Copy instructions for Recipe Generator</button></div>
+            </div>
+          </details>
+
+          <details>
+            <summary>Activity 4: Call Centre Audit, Automated Workflow with GEMS</summary>
+            <div class="detail-body"><p><strong>Scenario:</strong> You are a call centre manager at AC Pte Ltd. Your role is to audit the performance of call centre service staff according to the SOP, then submit a weekly report using the stipulated report template to senior management.</p><p><strong>Task:</strong> Create a ChatGPT Project to help you generate the weekly report.</p><div class="actions"><a class="action" href="https://drive.google.com/drive/folders/1ByOU9iJgqmnLv6ynmoxK-DmK6JbTFBwj?usp=drive_link" target="_blank" rel="noopener">SOP &amp; Report Templates</a></div></div>
+          </details>
+
+          <details>
+            <summary>Useful Terms for Image Prompting</summary>
+            <div class="detail-body"><p>Enhance image prompts with specific terms. Select any terms, then copy your selection.</p>
+              <div class="terms-grid" id="termsGrid">
+                <div class="term-group"><h3>Lighting</h3><button class="term">Golden hour</button><button class="term">Cinematic lighting</button><button class="term">Rembrandt lighting</button><button class="term">Soft ambient glow</button><button class="term">Harsh noon sun</button><button class="term">Backlight silhouette</button><button class="term">Diffused studio softbox</button><button class="term">Rim light</button><button class="term">Tungsten hue</button><button class="term">Chiaroscuro effect</button></div>
+                <div class="term-group"><h3>Camera</h3><button class="term">DSLR</button><button class="term">Mirrorless</button><button class="term">85mm f/1.4</button><button class="term">Shallow depth of field</button><button class="term">8K detail</button><button class="term">ISO 200</button><button class="term">HDR exposure</button><button class="term">Tilt-shift perspective</button><button class="term">Bokeh background</button><button class="term">Cinematic crop</button></div>
+                <div class="term-group"><h3>Tone</h3><button class="term">Editorial</button><button class="term">High-contrast</button><button class="term">Warm tones</button><button class="term">Natural shadows</button><button class="term">Film grain</button><button class="term">Cool cinematic palette</button><button class="term">Muted realism</button><button class="term">Glossy highlights</button><button class="term">Moody gradient</button></div>
+                <div class="term-group"><h3>Composition</h3><button class="term">Eye-level angle</button><button class="term">Slightly side profile</button><button class="term">Medium shot</button><button class="term">Crisp textures</button><button class="term">Rule of thirds</button><button class="term">Symmetry</button><button class="term">Close-up crop</button><button class="term">Wide establishing shot</button><button class="term">Over-the-shoulder view</button></div>
+                <div class="term-group"><h3>Environment</h3><button class="term">Urban street</button><button class="term">Minimalist studio</button><button class="term">Lush garden</button><button class="term">Beach sunset</button><button class="term">Corporate lounge</button><button class="term">Mountain landscape</button><button class="term">Neon alleyway</button><button class="term">Cozy café interior</button><button class="term">Foggy forest</button></div>
+                <div class="term-group"><h3>Emotion</h3><button class="term">Calm confidence</button><button class="term">Joyful energy</button><button class="term">Introspective mood</button><button class="term">Powerful presence</button><button class="term">Nostalgia</button><button class="term">Tension</button><button class="term">Serenity</button><button class="term">Curiosity</button><button class="term">Triumph</button><button class="term">Quiet strength</button></div>
+                <div class="term-group"><h3>Style</h3><button class="term">Cinematic</button><button class="term">Editorial</button><button class="term">Fashion magazine</button><button class="term">Documentary</button><button class="term">Fine art</button><button class="term">Retro</button><button class="term">Y2K</button><button class="term">Cyberpunk</button><button class="term">Noir</button><button class="term">Futuristic minimalism</button><button class="term">Candid lifestyle</button><button class="term">Painterly realism</button></div>
+              </div>
+              <div class="actions"><button class="action" type="button" id="selectTerms">Select All Terms</button><button class="action" type="button" id="clearTerms">Clear All</button><button class="action" type="button" id="copyTerms">Copy Selected Terms</button></div>
+              <div class="preview-box" id="termsPreview">No terms selected yet. Select terms above.</div>
+              <p><strong>Tip:</strong> Combine terms from different categories. Example: Cinematic lighting, golden hour, 85mm f/1.4, shallow depth of field, urban street, calm confidence, editorial style.</p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Activity 6: Presentation, Model AI Governance Framework</summary>
+            <div class="detail-body"><p>Create a presentation deck on the Model AI Governance Framework.</p><div class="actions"><a class="action" href="https://www.pdpc.gov.sg/-/media/files/pdpc/pdf-files/resource-for-organisation/ai/sgmodelaigovframework2.pdf" target="_blank" rel="noopener">Access PDF copy from PDPC</a></div></div>
+          </details>
+
+          <details>
+            <summary>Google AI Studio: Creating apps with Vibe Coding</summary>
+            <div class="detail-body">
+              <h3>Demo App: Social Media Generator</h3>
+              <p>Create an app that generates social media captions and images from supplied keywords. Let users choose a post objective such as engagement, promotion, or branding.</p>
+              <div class="example" id="socialPrompt">Create an app that generates social media captions and images based on keywords provided by the user. Let the user choose the objective of the post, including engagement, promotion, or branding.</div>
+              <div class="actions"><button class="action copy-button" type="button" data-copy="socialPrompt">Copy Prompt for Social Media Generator App</button><a class="action" href="https://aistudio.google.com" target="_blank" rel="noopener">Open Google AI Studio</a></div>
+              <h3 style="margin-top:30px">App Ideas for Practice</h3>
+              <div class="idea"><h3>1. Quotation Comparator &amp; Negotiation Planner</h3><p><strong>Input:</strong> Upload supplier quotations in PDF, Word, or text format.</p><p><strong>Output:</strong> Side-by-side comparison of prices, terms, and conditions, plus a suggested negotiation plan.</p><p><strong>Benefit:</strong> Users see differences quickly and receive a ready negotiation strategy.</p><p><strong>Prompt:</strong> You are an AI assistant that compares supplier quotations. When the user uploads quotations in PDF format, output a side-by-side comparison table of prices, terms, and conditions. Then generate a negotiation plan highlighting leverage points and recommended talking points.</p></div>
+              <div class="idea"><h3>2. Smart Email Assistant (Responder + Translator)</h3><p><strong>Input:</strong> Paste an incoming email, select a tone, and choose an optional translation language.</p><p><strong>Output:</strong> Suggested replies in the chosen tone, with translation when selected.</p><p><strong>Benefit:</strong> Staff respond quickly in the right tone and language.</p><p><strong>Prompt:</strong> You are an AI assistant that generates email responses. When the user pastes an email, provide suggested replies in the selected tone, such as formal, friendly, or persuasive. Add dropdown options for tone, brevity, and language, plus a field for words or phrases to include. When a target language is selected, translate the reply naturally.</p></div>
+              <div class="idea"><h3>3. Contract Risk Analyzer</h3><p><strong>Input:</strong> Upload a contract or clause.</p><p><strong>Output:</strong> Plain-English summary, risk rating, and recommended action.</p><p><strong>Benefit:</strong> Staff gain clarity and risk awareness without legal expertise.</p><p><strong>Prompt:</strong> You are an AI assistant that analyses contracts. When the user uploads a contract or clause, output a plain-English summary, assign a low, medium, or high risk rating, and suggest actions for contract negotiation.</p></div>
+              <div class="idea"><h3>4. Shipment Document Summarizer</h3><p><strong>Input:</strong> Upload shipping documents such as a bill of lading or packing list.</p><p><strong>Output:</strong> Summary of origin, destination, vessel, ETA, and special notes.</p><p><strong>Benefit:</strong> Users obtain key details without reading long documents.</p><p><strong>Prompt:</strong> You are an AI assistant that summarises shipment documents. When the user uploads shipping files, extract and output the origin, destination, vessel, ETA, and any special notes.</p></div>
+              <div class="idea"><h3>5. Expense Report Generator</h3><p><strong>Input:</strong> Upload receipts or expense statements.</p><p><strong>Output:</strong> Categorised expense report with totals for each category and the top three spending items.</p><p><strong>Benefit:</strong> Managers receive an immediate financial overview.</p><p><strong>Prompt:</strong> You are an AI assistant that generates expense reports. When the user uploads receipts or statements in PDF or image format, categorise expenses such as transport, storage, and administration. Output a summary table with totals for each category and highlight the top three spending items.</p></div>
+              <div class="idea"><h3>6. Quality Report Interpreter</h3><p><strong>Input:</strong> Upload a laboratory test or inspection report.</p><p><strong>Output:</strong> Simplified summary with grade, issues, recommendations, and a pass or fail flag.</p><p><strong>Benefit:</strong> Managers make quick decisions without reading technical details.</p><p><strong>Prompt:</strong> You are an AI assistant that interprets quality reports. When the user uploads laboratory or inspection notes, output the grade, issues, recommendations, and a simple pass or fail flag.</p></div>
+              <div class="idea"><h3>7. Supplier Comparison Dashboard</h3><p><strong>Input:</strong> Upload multiple supplier profiles or quotations.</p><p><strong>Output:</strong> Dashboard comparing prices, delivery times, and reliability scores.</p><p><strong>Benefit:</strong> Staff see which supplier is most competitive.</p><p><strong>Prompt:</strong> You are an AI assistant that compares suppliers. When the user uploads supplier documents, output a dashboard comparing prices, delivery times, and reliability. Rank the suppliers and highlight the best option with reasons.</p></div>
+              <div class="idea"><h3>8. Market News Digest</h3><p><strong>Input:</strong> Enter keywords or an industry.</p><p><strong>Output:</strong> Condensed digest of key points and likely impact.</p><p><strong>Benefit:</strong> Users save time and receive actionable insights.</p><p><strong>Prompt:</strong> You are an AI assistant that summarises market news. When the user enters keywords or an industry, search for news from the past week. Output a digest of key points, explain the likely impact, and recommend actions.</p></div>
+              <div class="idea"><h3>9. Customer Communication Log Summarizer</h3><p><strong>Input:</strong> Upload customer emails or chat transcripts.</p><p><strong>Output:</strong> Summary of concerns, requests, and sentiment trends.</p><p><strong>Benefit:</strong> Managers see what customers request or complain about.</p><p><strong>Prompt:</strong> You are an AI assistant that summarises customer communications. When the user uploads multiple emails or transcripts, output the main concerns, requests, and overall sentiment trends.</p></div>
+              <div class="idea"><h3>10. Invoice Parser</h3><p><strong>Input:</strong> Upload invoices in PDF or image format.</p><p><strong>Output:</strong> Structured data extracted from the uploaded invoices.</p><p><strong>Benefit:</strong> Users reduce manual data entry.</p><p><strong>Prompt:</strong> You are an AI assistant that extracts data from invoices. When the user uploads multiple invoices in PDF or image format, output the invoice details in CSV format. Include a button for users to download the parsed data as a CSV file.</p></div>
+            </div>
+          </details>
+
+          <details>
+            <summary>Clear Writing Instructions</summary>
+            <div class="detail-body">
+              <div class="style-grid">
+                <div class="style-panel"><h3>Use</h3><ul><li>Use clear, simple language.</li><li>Use short, impactful sentences.</li><li>Use active voice.</li><li>Focus on practical, actionable insights.</li><li>Use bullet lists in social media posts.</li><li>Support claims with data and specific examples when possible.</li><li>Address the reader as “you” and “your.”</li><li>Vary sentence length and structure naturally.</li><li>Prefer specific nouns, numbers, examples, and actions.</li><li>Write like a person with a point of view.</li></ul></div>
+                <div class="style-panel avoid"><h3>Avoid</h3><ul><li>Em dashes and semicolons.</li><li>Passive voice, metaphors, clichés, hashtags, and broad generalisations.</li><li>Repeated contrast formulas and forced groups of three.</li><li>Generic setup or closing language.</li><li>Warnings, notes, filler, and unnecessary context.</li><li>Restating the request or repeating the same idea.</li><li>Excessive headings, transitions, qualifiers, and parenthetical explanations.</li><li>Rhetorical questions and fake conversational transitions.</li><li>Corporate language when ordinary language works.</li><li>Generic claims without a concrete example, reason, number, person, event, or action.</li><li>Social icons, hashtags, asterisks, and markdown in the requested output.</li></ul></div>
+              </div>
+              <div class="style-panel avoid" style="margin-top:18px"><h3>Avoid these words and phrases</h3><p class="word-list">can, may, just, that, very, really, literally, actually, certainly, probably, basically, could, maybe, delve, embark, enlightening, esteemed, shed light, craft, crafting, imagine, realm, game-changer, unlock, discover, skyrocket, abyss, not alone, in a world where, revolutionize, disruptive, utilize, utilizing, dive deep, tapestry, illuminate, unveil, pivotal, intricate, elucidate, hence, furthermore, however, harness, exciting, groundbreaking, cutting-edge, remarkable, it, remains to be seen, glimpse into, navigating, landscape, stark, testament, in summary, in conclusion, moreover, boost, skyrocketing, opened up, powerful, inquiries, ever-evolving.</p></div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark case-study" id="project">
+      <div class="wrap">
+        <p class="section-label">Applied project</p>
+        <h2>Project Portfolio: OmniTech Case Study</h2>
+        <div class="actions" style="justify-content:center">
+          <a class="action" href="https://docs.google.com/presentation/d/1jbFW-2KhhlAML8Zvk_gN45PKTnhmT8tSXDVJtI0C5Fs/edit?usp=sharing" target="_blank" rel="noopener">View Project Portfolio Template</a>
+          <a class="action" href="https://drive.google.com/uc?export=download&amp;id=1VWuFF_rRO22i9f_8_C6D6cAkvcViVwLE" target="_blank" rel="noopener">Download Purchasing SOP</a>
+        </div>
+        <div class="case-copy">
+          <p><strong>Scenario:</strong> OmniTech Pte Ltd receives many supplier quotations. As Head of Purchasing, design a simple AI app that compares and evaluates quotations efficiently.</p>
+          <p>The app must read and reference the company's Purchasing Standard Operating Procedure when evaluating quotations. Test the app, fix issues, and prepare it for daily use by the procurement team.</p>
+          <h3>Tasks</h3>
+          <ol><li>Upload the Purchasing SOP as a source file.</li><li>Write a clear system instruction using the ACPR method.</li><li>Configure account settings for the procurement team.</li><li>Run test queries and confirm the app references the SOP.</li><li>Document the support process for an unresponsive app.</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white advanced" id="advanced">
+      <div class="wrap">
+        <p class="section-label">Next level</p>
+        <h2>Advanced Prompting Techniques</h2>
+        <p class="intro">Open each technique to view its purpose and example.</p>
+        <div class="accordion">
+          <details><summary>Adv Technique 1. Hashtag Prompting</summary><div class="detail-body"><p>Use concise, keyword-driven hashtags, such as #professional, #summarize, and #bulletpoints, to quickly set the tone, format, or function of the output.</p><p><strong>Example:</strong></p><div class="example">Create an email to a client explaining the project delay. #CommsExpertPOV #concise #professional #apologetic #ProjectAlpha #delay3weeks</div><p><strong>Note:</strong> This method is a shortcut to writing ACPR prompts.</p></div></details>
+          <details><summary>Adv Technique 2. Chain-of-Thoughts (CoT) Prompting</summary><div class="detail-body"><p>A CoT prompt guides the model through a defined step-by-step process, breaking a complex problem into smaller logical parts before providing the final answer. This supports accuracy and transparency in problem-solving.</p><p><strong>Example:</strong></p><div class="example">Act as a compassionate manager with experience providing constructive feedback to a team member who missed a project deadline.
+
+Create an email addressing the missed deadline. Break this down step-by-step:
+
+1. First, identify an empathetic opening that acknowledges the impact without blame.
+2. Then, formulate two or three clarifying questions to understand the root barrier.
+3. Finally, propose specific support or resources to prevent recurrence.
+
+Present in a calm, direct tone, professional, warm, and supportive.
+
+Refer to this:
+- Assume positive intent. This is a coaching moment, not a reprimand.
+- Open with empathy, ask clarifying questions, then close with support and next steps.</div></div></details>
+          <details><summary>Adv Technique 3. Leveling-Up Prompting</summary><div class="detail-body"><p>Ask the AI to rate the quality of its previous output, or provide your own rating, then ask it to level up by improving a specific aspect such as complexity, creativity, or detail.</p><p><strong>Examples:</strong></p><div class="example">Rate your previous output from 1 to 10 in terms of [specific aspect].
+
+Improve it to 10.
+
+Or:
+
+This output was Level 1 for creativity. Rewrite it to achieve Level 2 by using more descriptive language and an example.</div></div></details>
+          <details><summary>Adv Technique 4. Prompt Templates Creation</summary><div class="detail-body"><p>Capture the nuance of a refined, multi-step AI conversation in one reusable, high-quality prompt.</p><p><strong>Example:</strong></p><div class="example">You helped me create [describe the final output, for example, a 250-word technical abstract on AI ethics].
+
+Analyse this conversation and write one complete prompt that would reproduce this result directly so I can reuse it as a template for future tasks.</div></div></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Copyright © Jonathan Tan. All rights reserved.</footer>
+</div>
+
+<script>
+  function copyText(text, done) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done);
+      return;
+    }
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+    done();
+  }
+
+  document.querySelectorAll('.copy-button').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var target = document.getElementById(button.getAttribute('data-copy'));
+      if (!target) return;
+      copyText(target.innerText, function () {
+        var original = button.textContent;
+        button.textContent = 'Copied';
+        setTimeout(function () { button.textContent = original; }, 1600);
+      });
+    });
+  });
+
+  var instructionBoxes = Array.from(document.querySelectorAll('#instructionList input'));
+  var instructionPreview = document.getElementById('instructionPreview');
+  var selectedCount = document.getElementById('selectedCount');
+  function updateInstructions() {
+    var selected = instructionBoxes.filter(function (box) { return box.checked; }).map(function (box) { return box.value; });
+    selectedCount.textContent = selected.length;
+    instructionPreview.textContent = selected.length ? selected.join('\n') : 'Your selected instructions will appear here...';
+  }
+  instructionBoxes.forEach(function (box) { box.addEventListener('change', updateInstructions); });
+  document.getElementById('selectAll').addEventListener('click', function () { instructionBoxes.forEach(function (box) { box.checked = true; }); updateInstructions(); });
+  document.getElementById('clearAll').addEventListener('click', function () { instructionBoxes.forEach(function (box) { box.checked = false; }); updateInstructions(); });
+  document.getElementById('copySelected').addEventListener('click', function () {
+    var text = instructionBoxes.filter(function (box) { return box.checked; }).map(function (box) { return box.value; }).join('\n');
+    if (!text) return;
+    var button = this;
+    copyText(text, function () { var original = button.textContent; button.textContent = 'Copied'; setTimeout(function () { button.textContent = original; }, 1600); });
+  });
+
+  var termButtons = Array.from(document.querySelectorAll('.term'));
+  var termsPreview = document.getElementById('termsPreview');
+  function updateTerms() {
+    var selected = termButtons.filter(function (button) { return button.classList.contains('selected'); }).map(function (button) { return button.textContent; });
+    termsPreview.textContent = selected.length ? selected.join(', ') : 'No terms selected yet. Select terms above.';
+  }
+  termButtons.forEach(function (button) { button.addEventListener('click', function () { button.classList.toggle('selected'); updateTerms(); }); });
+  document.getElementById('selectTerms').addEventListener('click', function () { termButtons.forEach(function (button) { button.classList.add('selected'); }); updateTerms(); });
+  document.getElementById('clearTerms').addEventListener('click', function () { termButtons.forEach(function (button) { button.classList.remove('selected'); }); updateTerms(); });
+  document.getElementById('copyTerms').addEventListener('click', function () {
+    var text = termButtons.filter(function (button) { return button.classList.contains('selected'); }).map(function (button) { return button.textContent; }).join(', ');
+    if (!text) return;
+    var button = this;
+    copyText(text, function () { var original = button.textContent; button.textContent = 'Copied'; setTimeout(function () { button.textContent = original; }, 1600); });
+  });
+</script>
